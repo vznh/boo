@@ -5,16 +5,19 @@ import axios from "axios";
 export default function MainDashboard() {
   const [inputValue, setInputValue] = useState<string>("");
 
+  const [output, setOutput] = useState<string>("");
+
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
 
+    console.log("Calling the API with request: " + inputValue);
     const response = await axios.post(
       "/api/handle-user-request", {
       request: inputValue
     });
 
     if (response.data.conversion) {
-      console.log(response.data.conversion);
+      setOutput(JSON.stringify(response.data.conversion));
     } else {
       // Throw a new interface error
       console.error(response.data.error)
@@ -36,6 +39,7 @@ export default function MainDashboard() {
             onChange={(e) => setInputValue(e.target.value)}
           />
         </form>
+        {output}
       </div>
     </div>
   )
