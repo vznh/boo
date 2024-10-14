@@ -66,14 +66,15 @@ class FirebaseClientImpl implements FirebaseClient {
       process.env.GOOGLE_CLIENT_SECRET
     ).setCredentials({ access_token: token });
 
-    const calendar = new Calendar({ auth: oauth2Client });
+    // const calendar = new calendar_v3({ auth: oauth2Client });
 
-    const response = await calendar.events.insert({
-      calendarId: 'primary',
-      resource: event
-    });
+    //const response = await calendar.events.insert({
+    //  calendarId: 'primary',
+    //  resource: event
+    // });
 
-    return response.data;
+    // return response.data;
+    return "" as any;
   }
 }
 
