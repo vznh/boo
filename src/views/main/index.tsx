@@ -5,6 +5,8 @@ import axios from "axios";
 export default function MainDashboard() {
   const [inputValue, setInputValue] = useState<string>("");
 
+  const [userIsNotSignedIn, setUserIsNotSignedIn] = useState<boolean>();
+
   const [output, setOutput] = useState<string>("");
 
   async function handleSubmit(event: FormEvent) {
@@ -29,6 +31,9 @@ export default function MainDashboard() {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="w-full max-w-md space-y-6">
+        {userIsNotSignedIn ? (
+
+        )}
         <h1 className="text-3xl font-bold text-center text-primary">Start by typing any event.</h1>
         <form onSubmit={handleSubmit}>
           <input
