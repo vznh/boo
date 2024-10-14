@@ -1,28 +1,31 @@
 // views/index.tsx
 import { useState, FormEvent } from "react";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
+import { parseError } from "@/utils/back";
 
 export default function MainDashboard() {
   const [inputValue, setInputValue] = useState<string>("");
 
-  const [userIsNotSignedIn, setUserIsNotSignedIn] = useState<boolean>();
+  const [isUserSignedIn, setIsUserSignedIn] = useState<boolean>();
 
   const [output, setOutput] = useState<string>("");
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
 
-    console.log("Calling the API with request: " + inputValue);
-    const response = await axios.post(
-      "/api/handle-user-request", {
-      request: inputValue
-    });
+    try {
+      console.log("Started converting the user's request to a suitable format...");
+      const ur = await axios.post(
+        "/api/handle-user-request", {
+        request: inputValue
+      });
 
-    if (response.data.conversion) {
-      setOutput(JSON.stringify(response.data.conversion));
-    } else {
-      // Throw a new interface error
-      console.error(response.data.error)
+      if (ur.data.conversion) {
+        setOutput(JSON.stringify(ur.data.conversion));
+      }
+
+    } catch (error: AxiosError | any | unknown) {
+      console.error(parseError(error));
     }
 
     setInputValue("");
