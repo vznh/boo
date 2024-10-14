@@ -5,12 +5,17 @@ import {
   signInWithPopup,
   Auth,
   UserCredential,
-  GoogleAuthProvider
+  GoogleAuthProvider,
 } from "firebase/auth";
-import { OAuth2Client } from "google-auth-library";
 import { CalendarEvent } from "@/models/types";
-import { calendar_v3 } from "googleapis";
+import { google } from "googleapis";
+import { parseError } from "@/utils/back";
 
+/**
+ * This interface represents a confirmation response for an event.
+ * If the response is successful, the combination of proceeding data and a success flag will be raised.
+ * If the response fails, the combination of a failure flag and possible error messages will be returned.
+ */
 export interface EventResponseConfirmation {
   data?: any;
   success: boolean;
@@ -18,9 +23,12 @@ export interface EventResponseConfirmation {
 }
 
 interface FirebaseClient {
-  auth: ReturnType<typeof getAuth>;
+  auth: Auth;
   signInWithGoogle: () => Promise<UserCredential>;
-  insertEvent: (token: string, event: CalendarEvent) => Promise<EventResponseConfirmation>;
+  insertEvent: (
+    token: string,
+    event: CalendarEvent,
+  ) => Promise<EventResponseConfirmation>;
 }
 
 class FirebaseClientImpl implements FirebaseClient {
@@ -52,29 +60,34 @@ class FirebaseClientImpl implements FirebaseClient {
 
   public async signInWithGoogle(): Promise<UserCredential> {
     const provider = new GoogleAuthProvider();
-    const result = await signInWithPopup(
-      this.auth, provider
-    );
+    const result = await signInWithPopup(this.auth, provider);
     return result;
   }
 
   public async insertEvent(
-    token: string, event: any
+    token: string,
+    event: CalendarEvent,
   ): Promise<EventResponseConfirmation> {
-    const oauth2Client = new OAuth2Client(
-      process.env.GOOGLE_CLIENT_ID,
-      process.env.GOOGLE_CLIENT_SECRET
-    ).setCredentials({ access_token: token });
+    const oauth2Client = new google.auth.OAuth2();
 
-    // const calendar = new calendar_v3({ auth: oauth2Client });
+    oauth2Client.setCredentials({ access_token: token });
 
-    //const response = await calendar.events.insert({
-    //  calendarId: 'primary',
-    //  resource: event
-    // });
+    const calendarInst = google.calendar({ version: "v3", auth: oauth2Client });
+    try {
+      const response = calendarInst.events.insert({
+        calendarId: "primary",
+        requestBody: event,
+      });
 
-    // return response.data;
-    return "" as any;
+      return { success: true, data: response };
+    } catch (error: any | unknown) {
+      return {
+        success: false,
+        error:
+          "There was an error attempting to insert an event. Additional details (if present): " +
+          parseError(error),
+      };
+    }
   }
 }
 
