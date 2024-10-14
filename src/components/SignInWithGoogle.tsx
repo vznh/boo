@@ -4,6 +4,7 @@ import firebaseClient from "@/services/firebase";
 import { parseError } from "@/utils/back";
 import { UserCredential } from "firebase/auth";
 import { Button } from "@/components/ui/Button";
+import { IconBrandGoogle } from "tabler-icons";
 
 // Assuming you have already initialized Firebase in your project
 // If not, you'll need to add the initialization code
@@ -29,7 +30,7 @@ export function SignInWithGoogleButton() {
       onClick={handleLogin}
     >
       <span className="flex items-center justify-center">
-        <span className="text-blue-500 font-medium mr-2">G</span>
+        <IconBrandGoogle className="w-4 h-4" />
         <span className="font-normal">Sign in with Google</span>
       </span>
     </Button>
