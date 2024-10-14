@@ -2,6 +2,7 @@
 import { useState, FormEvent } from "react";
 import axios, { AxiosError } from "axios";
 import { parseError } from "@/utils/back";
+import { CalendarEvent } from "@/models/types";
 
 export default function MainDashboard() {
   const [inputValue, setInputValue] = useState<string>("");
@@ -9,6 +10,7 @@ export default function MainDashboard() {
   const [isUserSignedIn, setIsUserSignedIn] = useState<boolean>();
 
   const [output, setOutput] = useState<string>("");
+  const [queuedEvent, setQueuedEvent] = useState<CalendarEvent | null>(null);
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
@@ -22,8 +24,21 @@ export default function MainDashboard() {
 
       if (ur.data.conversion) {
         setOutput(JSON.stringify(ur.data.conversion));
+        setQueuedEvent(ur.data.conversion);
       }
 
+      const pr = await axios.post(
+        "/api/push-event-to-cal-req",
+        {
+          // token: stored token goes here
+          event: queuedEvent
+        }
+      );
+
+      if (pr.data.success) {
+        setOutput("Data was successfully pushed.");
+        setQueuedEvent(null);
+      }
     } catch (error: AxiosError | any | unknown) {
       console.error(parseError(error));
     }
