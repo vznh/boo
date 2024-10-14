@@ -25,8 +25,6 @@ export default async function handler(
       .json({ error: "Request body is missing 'request'." });
   }
 
-  console.error(getCurrentStatus());
-
   try {
     const response = await axios.post(
       "https://api.cerebras.ai/v1/chat/completions",
@@ -69,7 +67,7 @@ export default async function handler(
           },
           {
             role: "assistant",
-            content: `String to convert to JSON object for processing: ${request}, and strictly current date and time of request: ${getCurrentStatus()}`,
+            content: `String to convert to JSON object for processing: ${request}, and strictly current date and time of request: ${getCurrentStatus()}. If there is no date and time given by the user, supply this instead.`,
           },
         ],
         model: "llama3.1-8b",
@@ -84,7 +82,6 @@ export default async function handler(
 
     if (response.status === 200) {
       const parsedResponse = response.data.choices[0].message.content;
-      console.log(parsedResponse);
       return res.status(200).json({ conversion: parsedResponse });
     }
   } catch (error: Error | AxiosError | unknown) {
