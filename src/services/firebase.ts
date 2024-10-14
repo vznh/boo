@@ -1,3 +1,20 @@
+/**
+ * This module provides an singleton implementation of Firebase client operations,
+ * including Google sign-in and event insertion into Google Calendar.
+ *
+ * It defines the `EventResponseConfirmation` interface for handling
+ * responses from event operations, as well as the `FirebaseClient`
+ * interface outlining the necessary methods and properties. The
+ * `FirebaseClientImpl` class implements this interface and is a
+ * singleton that initializes the Firebase app and Auth object.
+ *
+ * Key functionalities include signing in with Google and inserting
+ * calendar events, with appropriate error handling and response
+ * confirmation.
+ *
+ * You can use this in any file by importing the firebaseClient as a default import.
+ */
+
 // [START services/firebase]
 import { initializeApp } from "firebase/app";
 import {
@@ -22,9 +39,25 @@ export interface EventResponseConfirmation {
   error?: string;
 }
 
+/**
+ * Interface defining the methods for Firebase Client Operations.
+ */
 interface FirebaseClient {
+  /** Firebase Auth object used for authentication. */
   auth: Auth;
+
+  /**
+   * Signs in with Google using a popup.
+   * @returns A promise that resolves with the UserCredential on successful sign-in.
+   */
   signInWithGoogle: () => Promise<UserCredential>;
+
+  /**
+   * Inserts an event into the calendar.
+   * @param token - The access token for Google API authentication.
+   * @param event - The CalendarEvent object representing the event to be inserted.
+   * @returns A promise that resolves with an EventResponseConfirmation indicating the result of the insert operation.
+   */
   insertEvent: (
     token: string,
     event: CalendarEvent,
@@ -50,6 +83,10 @@ class FirebaseClientImpl implements FirebaseClient {
     this.auth = getAuth(app);
   }
 
+  /**
+   * Retrieves the singleton instance of FirebaseClientImpl.
+   * @returns The instance of FirebaseClientImpl.
+   */
   public static getInstance(): FirebaseClientImpl {
     if (!this.instance) {
       this.instance = new FirebaseClientImpl();
@@ -58,12 +95,22 @@ class FirebaseClientImpl implements FirebaseClient {
     return this.instance;
   }
 
+  /**
+   * Signs in with Google using a popup.
+   * @returns A promise that resolves with the UserCredential on successful sign-in.
+   */
   public async signInWithGoogle(): Promise<UserCredential> {
     const provider = new GoogleAuthProvider();
     const result = await signInWithPopup(this.auth, provider);
     return result;
   }
 
+  /**
+   * Inserts an event into the calendar.
+   * @param token - The access token for Google API authentication.
+   * @param event - The CalendarEvent object representing the event to be inserted.
+   * @returns A promise that resolves with an EventResponseConfirmation indicating the result of the insert operation.
+   */
   public async insertEvent(
     token: string,
     event: CalendarEvent,
@@ -94,3 +141,5 @@ class FirebaseClientImpl implements FirebaseClient {
 const firebaseClient = FirebaseClientImpl.getInstance();
 
 export default firebaseClient;
+
+// [END services/firebase]
