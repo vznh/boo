@@ -1,16 +1,19 @@
 // [START models/fonts.ts]
-import { Inter, Roboto } from "next/font/google";
+import { Inter, Roboto, Noto_Sans } from "next/font/google";
 
 export const InterHeading = Inter({
   weight: "200",
-  subsets: ['latin'],
-
-})
+  subsets: ["latin"],
+});
 
 export const InterBody = Inter({
   weight: "400",
-  subsets: ['latin']
-})
+  subsets: ["latin"],
+});
 
+export const NotoBody = Noto_Sans({
+  weight: "400",
+  subsets: ["latin"],
+});
 
 // [END models/fonts.ts]
