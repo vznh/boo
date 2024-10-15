@@ -17,12 +17,14 @@
     "firebase": "^10.14.0",
     "google-auth-library": "^9.14.1",
     "googleapis": "^144.0.0",
+    "immer": "^10.1.1",
     "next": "14.2.3",
     "radix-ui": "^1.0.1",
     "react": "^18",
     "react-dom": "^18",
     "tabler-icons": "^1.35.0",
-    "tailwind-merge": "^2.5.3"
+    "tailwind-merge": "^2.5.3",
+    "zustand": "^5.0.0"
   },
   "devDependencies": {
     "typescript": "^5",
