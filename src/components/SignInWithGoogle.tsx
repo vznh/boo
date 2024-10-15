@@ -14,14 +14,16 @@ import { useTokenStore } from "@/stores";
 // If not, you'll need to add the initialization code
 //
 export function SignInWithGoogleButton() {
-  if (!useTokenStore.getState().token) {
+  const { token, setToken } = useTokenStore();
+
+  if (token) {
     return <></>;
   }
 
-  async function handleLogin() {
+  const handleLogin = async () => {
     try {
       const userCredential = await firebaseClient.signInWithGoogle();
-      useTokenStore(state => state.setToken(userCredential));
+      setToken(userCredential);
 
       console.log("User logged in: ", userCredential.user);
     } catch (error: unknown) {
