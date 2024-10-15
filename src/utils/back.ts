@@ -39,7 +39,6 @@ export function getCurrentStatus() {
 /**
  * A queue data structure specifically meant for processing calendar events in mindful time.
  * @constructor {none} - Creates a queue instance. There should only be one, so this is a singleton queue.
- *
  */
 export interface EventQueue<CalendarEvent> {
   enqueue(item: CalendarEvent): void;
