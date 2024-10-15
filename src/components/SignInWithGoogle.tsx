@@ -1,24 +1,31 @@
+/*
+ * A button that handles OAuth2 authentication, and stores it in useTokenStore.
+ * This component will deactivate itself if useTokenStore contains a value.
+ */
+
 // [START components/SignInWithGoogle]
-import { useState } from "react";
 import firebaseClient from "@/services/firebase";
 import { parseError } from "@/utils/back";
-import { UserCredential } from "firebase/auth";
 import { Button } from "@/components/ui/Button";
 import { IconBrandGoogle } from "tabler-icons";
+import { useTokenStore } from "@/stores";
 
 // Assuming you have already initialized Firebase in your project
 // If not, you'll need to add the initialization code
 //
 export function SignInWithGoogleButton() {
-  // Google states
-  const [userCredentials, setUserCredentials] = useState<UserCredential | null>(null);
+  if (!useTokenStore.getState().token) {
+    return <></>;
+  }
 
   async function handleLogin() {
     try {
       const userCredential = await firebaseClient.signInWithGoogle();
-      setUserCredentials(userCredential);
+      useTokenStore(state => state.setToken(userCredential));
+
       console.log("User logged in: ", userCredential.user);
     } catch (error: unknown) {
+      // Convert this to be a notification later
       console.log(parseError(error));
     }
   }
