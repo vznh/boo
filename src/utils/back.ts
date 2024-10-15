@@ -38,8 +38,7 @@ export function getCurrentStatus() {
 
 /**
  * A queue data structure specifically meant for processing calendar events in mindful time.
- *
- *
+ * @constructor {none} - Creates a queue instance. There should only be one, so this is a singleton queue.
  *
  */
 export interface EventQueue<CalendarEvent> {
@@ -53,6 +52,11 @@ class EQueue<CalendarEvent> implements EventQueue<CalendarEvent> {
 
   constructor(private capacity: number = 5) {}
 
+  /**
+   * Adds a new item to the end of the queue.
+   * @param {CalendarEvent} item - The calendar event to be added to the queue.
+   * @throws {Error} Throws an error if the queue has reached its maximum capacity.
+   */
   enqueue(item: CalendarEvent): void {
     if (this.size() === this.capacity) {
       // Load onto notification store
@@ -61,10 +65,18 @@ class EQueue<CalendarEvent> implements EventQueue<CalendarEvent> {
     this.storage.push(item);
   }
 
+  /**
+   * Removes and returns the first item from the queue.
+   * @returns {CalendarEvent | undefined} The calendar event removed from the queue or undefined if the queue is empty.
+   */
   dequeue(): CalendarEvent | undefined {
     return this.storage.shift();
   }
 
+  /**
+   * Returns the current number of items in the queue.
+   * @returns {number} The size of the queue.
+   */
   size(): number {
     return this.storage.length;
   }
