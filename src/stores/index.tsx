@@ -5,7 +5,7 @@ import { CalendarEvent } from "@/models/types";
 import { UserCredential } from "firebase/auth";
 
 interface TokenStore {
-  token: UserCredential;
+  token: UserCredential | null;
   setToken: (token: UserCredential) => void;
 }
 
