@@ -1,4 +1,11 @@
-// pages/api/handle-user-request
+/**
+ * A route that handles taking a user's pure string request and turning it into a plausible JSON object.
+ * @param {string} request - Pure, unadulterated string.
+ * @returns { CalendarEvent } conversion - Parsed JSON object that can be placed into a Google Calendar object.
+ *
+ */
+
+// [START pages/api/handle-user-request]
 import type { NextApiRequest, NextApiResponse } from "next";
 import axios from "axios";
 import { AxiosError } from "axios";
@@ -98,3 +105,5 @@ export default async function handler(
       error: `The request was successful, but Celebras did not return a valid response in order to create an event.`,
     });
 }
+
+// [END pages/api/handle-user-request.ts]

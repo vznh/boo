@@ -1,8 +1,15 @@
-// pages/api/push-event-to-cal-req
+/**
+ * Pushes an object of type CalendarEvent to a linked calendar.
+ * @param {CalendarEvent} request - Aforementioned object. See models/types for more information.
+ * @param {UserCredential} token - Authorization token needed to push objects onto the calendar.
+ * @returns {NextApiResponse<InterfaceResponse>} res - Object that contains a status code, success flag, and optional error coding. Will always return a success flag.
+ */
+// [START pages/api/push-event-to-cal-req]
 import type { NextApiRequest, NextApiResponse } from "next";
 import { CalendarEvent } from "@/models/types";
 import firebaseClient from "@/services/firebase";
 import { parseError } from "@/utils/back";
+
 
 interface InterfaceResponse {
   success: boolean;
@@ -40,3 +47,5 @@ export default async function handler(
     return res.status(600).json({ success: false, error: parseError(error) });
   }
 }
+
+// [END pages/api/push-event-to-cal-req]
