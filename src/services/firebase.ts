@@ -23,18 +23,12 @@ import {
   Auth,
   UserCredential,
   GoogleAuthProvider,
+  OAuthCredential,
 } from "firebase/auth";
-import { CalendarEvent } from "@/models/types";
-import { google } from "googleapis";
 import { parseError } from "@/utils/back";
 
-/**
- * This interface represents a confirmation response for an event.
- * If the response is successful, the combination of proceeding data and a success flag will be raised.
- * If the response fails, the combination of a failure flag and possible error messages will be returned.
- */
-export interface EventResponseConfirmation {
-  data?: any;
+interface CredentialRequestResponse {
+  data?: string;
   success: boolean;
   error?: string;
 }
@@ -50,33 +44,21 @@ interface FirebaseClient {
    * Signs in with Google using a popup.
    * @returns A promise that resolves with the UserCredential on successful sign-in.
    */
-  signInWithGoogle: () => Promise<UserCredential>;
-
-  /**
-   * Inserts an event into the calendar.
-   * @param token - The access token for Google API authentication.
-   * @param event - The CalendarEvent object representing the event to be inserted.
-   * @returns A promise that resolves with an EventResponseConfirmation indicating the result of the insert operation.
-   */
-  insertEvent: (
-    token: string,
-    event: CalendarEvent,
-  ) => Promise<EventResponseConfirmation>;
+  signInWithGoogle: () => Promise<CredentialRequestResponse>;
 }
 
-class FirebaseClientImpl implements FirebaseClient {
+export class FirebaseClientImpl implements FirebaseClient {
   public auth: Auth;
+  private static clientInstance: FirebaseClientImpl;
 
-  private static instance: FirebaseClientImpl;
-
-  private constructor() {
+  constructor() {
     const firebaseConfig = {
-      apiKey: process.env.FIREBASE_API_KEY,
-      authDomain: process.env.FIREBASE_AUTH_DOMAIN,
-      projectId: process.env.FIREBASE_PROJECT_ID,
-      storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
-      messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
-      appId: process.env.FIREBASE_APP_ID,
+      apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+      authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+      projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+      storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+      messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+      appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
     };
 
     const app = initializeApp(firebaseConfig);
@@ -87,58 +69,35 @@ class FirebaseClientImpl implements FirebaseClient {
    * Retrieves the singleton instance of FirebaseClientImpl.
    * @returns The instance of FirebaseClientImpl.
    */
-  public static getInstance(): FirebaseClientImpl {
-    if (!this.instance) {
-      this.instance = new FirebaseClientImpl();
+  public static getClientInstance(): FirebaseClientImpl {
+    if (!this.clientInstance) {
+      this.clientInstance = new FirebaseClientImpl();
     }
 
-    return this.instance;
+    return this.clientInstance;
   }
 
   /**
    * Signs in with Google using a popup.
    * @returns A promise that resolves with the UserCredential on successful sign-in.
    */
-  public async signInWithGoogle(): Promise<UserCredential> {
-    const provider = new GoogleAuthProvider();
-    const result = await signInWithPopup(this.auth, provider);
-    return result;
-  }
-
-  /**
-   * Inserts an event into the calendar.
-   * @param token - The access token for Google API authentication.
-   * @param event - The CalendarEvent object representing the event to be inserted.
-   * @returns A promise that resolves with an EventResponseConfirmation indicating the result of the insert operation.
-   */
-  public async insertEvent(
-    token: string,
-    event: CalendarEvent,
-  ): Promise<EventResponseConfirmation> {
-    const oauth2Client = new google.auth.OAuth2();
-
-    oauth2Client.setCredentials({ access_token: token });
-
-    const calendarInst = google.calendar({ version: "v3", auth: oauth2Client });
+  public async signInWithGoogle(): Promise<CredentialRequestResponse> {
     try {
-      const response = calendarInst.events.insert({
-        calendarId: "primary",
-        requestBody: event,
-      });
+      const provider = new GoogleAuthProvider();
+      provider.addScope("https://www.googleapis.com/auth/calendar");
+      const result = await signInWithPopup(this.auth, provider);
 
-      return { success: true, data: response };
+      const credential = GoogleAuthProvider.credentialFromResult(result);
+      const token = credential!.accessToken;
+
+      return { data: token, success: true };
     } catch (error: any | unknown) {
-      return {
-        success: false,
-        error:
-          "There was an error attempting to insert an event. Additional details (if present): " +
-          parseError(error),
-      };
+      return { success: false, error: "Signing in with Google returned an error, or no credentials."}
     }
   }
 }
 
-const firebaseClient = FirebaseClientImpl.getInstance();
+const firebaseClient = FirebaseClientImpl.getClientInstance();
 
 export default firebaseClient;
 
