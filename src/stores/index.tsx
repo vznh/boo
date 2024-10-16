@@ -2,11 +2,10 @@
 import { create } from "zustand";
 import { produce } from "immer";
 import { CalendarEvent } from "@/models/types";
-import { UserCredential } from "firebase/auth";
 
 interface TokenStore {
-  token: UserCredential | null;
-  setToken: (token: UserCredential) => void;
+  token: string | null;
+  setToken: (token: string) => void;
 }
 
 interface CalendarStore {
@@ -22,7 +21,7 @@ export const useCalendarStore = create<CalendarStore>((set) => ({
 }));
 
 export const useTokenStore = create<TokenStore>((set) => ({
-  token: {} as UserCredential,
+  token: null,
   setToken: (token) => set(produce((state) => {
     state.token = token;
   })),
