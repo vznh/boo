@@ -10,7 +10,7 @@ export interface CalendarEvent {
     dateTime: string; // ISO 8601 date-time string representing the end of the event
     timeZone: string; // IANA time zone string for the event's time zone
   };
-  recurrence?: string[]; // Array of recurrence rules (e.g., ["RRULE:FREQ=WEEKLY;BYDAY=MO"] for weekly recurrence)
+  recurrence?: string; // RRULE
   attendees?: { email: string }[]; // Array of attendee objects, each containing an email property
   reminders?: {
     useDefault: boolean; // Indicator whether to use default reminders
