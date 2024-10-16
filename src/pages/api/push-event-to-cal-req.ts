@@ -32,9 +32,8 @@ export default async function handler(
   }
 
   try {
-    const response = await firebaseServer.insertEvent(token, request);
-    if (response.success) return res.status(200).json({ success: true });
-    else return res.status(404).json({ success: false });
+    await firebaseServer.insertEvent(token, request);
+    return res.status(200).json({ success: true });
   } catch (error: any | unknown) {
     console.error(parseError(error));
     return res.status(600).json({ success: false, error: parseError(error) });
