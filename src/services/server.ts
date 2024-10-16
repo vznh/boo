@@ -42,6 +42,7 @@ export class FirebaseServerImpl extends FirebaseClientImpl {
   ): Promise<EventResponseConfirmation> {
     try {
       const oauth2Client = new google.auth.OAuth2();
+      console.log("Token being pushed to server-side: " + token);
       oauth2Client.setCredentials({ access_token: token });
 
       const calendarInst = google.calendar({ version: "v3", auth: oauth2Client });
@@ -50,7 +51,7 @@ export class FirebaseServerImpl extends FirebaseClientImpl {
         requestBody: event,
       });
 
-      return response.data ? { success: true, data: response } : { success: false, error: "Data did not succeed." };
+      return response.data ? { success: true, data: response } : { success: false, error: "There was an error attempting to insert an event. Data did not succeed. Additional details (if present): " + parseError(response.data) };
     } catch (error: any | unknown) {
       return {
         success: false,
