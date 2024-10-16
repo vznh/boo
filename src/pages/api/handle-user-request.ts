@@ -78,6 +78,7 @@ export default async function handler(
           },
         ],
         model: "llama3.1-8b",
+        response_format: { "type": "json_object" }
       },
       {
         headers: {
