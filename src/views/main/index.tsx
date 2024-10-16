@@ -5,6 +5,7 @@ import { parseError } from "@/utils/back";
 import { CalendarEvent } from "@/models/types";
 import { useTokenStore } from "@/stores";
 import { InterHeading, NotoBody } from "@/models/fonts";
+import { SignInWithGoogleButton } from "@/components/SignInWithGoogle";
 
 export default function MainDashboard() {
   const [inputValue, setInputValue] = useState<string>("");
@@ -15,11 +16,14 @@ export default function MainDashboard() {
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
+    console.log(token);
 
     try {
       console.log(
         "Started converting the user's request to a suitable format..."
       );
+
+      console.log(`Request: ${inputValue}`);
 
       const ur = await axios.post("/api/handle-user-request", {
         request: inputValue,
@@ -27,18 +31,22 @@ export default function MainDashboard() {
 
       if (ur.data.conversion) {
         console.log("Fetched data conversion successfully..");
+        console.log(`Conversion: ${ur.data.conversion}`);
         setQueuedEvent(ur.data.conversion);
       }
 
       console.log("Started attempt to push event onto user's calendar...");
 
+      console.log("Token we're working with: " + token);
+
       const pr = await axios.post("/api/push-event-to-cal-req", {
-        // token: stored token goes here
+        token: token,
         request: queuedEvent,
       });
 
       if (pr.data.success) {
         console.log("Data was successfully pushed onto the calendar.");
+        console.log(`Calendar event: ${pr.data.data}`);
         setQueuedEvent(null);
       }
     } catch (error: AxiosError | any | unknown) {
@@ -77,6 +85,7 @@ export default function MainDashboard() {
                 Submit
               </button>
             </form>
+            <SignInWithGoogleButton />
           </div>
         </main>
         <footer className="p-4 flex justify-center gap-4 text-sm text-white">
