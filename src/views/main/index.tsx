@@ -16,14 +16,11 @@ export default function MainDashboard() {
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
-    console.log(token);
 
     try {
       console.log(
         "Started converting the user's request to a suitable format..."
       );
-
-      console.log(`Request: ${inputValue}`);
 
       const ur = await axios.post("/api/handle-user-request", {
         request: inputValue,
@@ -37,7 +34,7 @@ export default function MainDashboard() {
 
       console.log("Started attempt to push event onto user's calendar...");
 
-      console.log("Token we're working with: " + token);
+      console.log(`Parameters: token ${token}; request: ${queuedEvent}`);
 
       const pr = await axios.post("/api/push-event-to-cal-req", {
         token: token,
