@@ -4,7 +4,7 @@ import axios, { AxiosError } from "axios";
 import { parseError } from "@/utils/back";
 import { CalendarEvent } from "@/models/types";
 import { useTokenStore } from "@/stores";
-import { InterHeading, NotoBody } from "@/models/fonts";
+import { InterHeading, NotoBody, QuatHeading } from "@/models/fonts";
 import { SignInWithGoogleButton } from "@/components/SignInWithGoogle";
 
 export default function MainDashboard() {
@@ -56,12 +56,14 @@ export default function MainDashboard() {
   function testView() {
     return (
       <div className="flex flex-col min-h-screen w-[100%] text-white">
-        <header className="p-4 flex justify-end">
-          <span className="text-sm text-white font-bold"><a href="https://github.com/vznh/charlie">Pre-alpha</a></span>
-        </header>
+      <header className="flex flex-row p-4 justify-end">
+        <span className="text-sm text-white font-bold">
+          <a href="https://github.com/vznh/charlie"><span className="text-md pr-1">&#10043;</span> Pre-alpha</a>
+        </span>
+      </header>
         <main className="flex-grow flex flex-col items-center justify-center p-4">
-          <h1 className={`${InterHeading.style.fontFamily} tracking-tighter text-4xl font-bold mb-8`}>
-            How can I make your day?
+          <h1 className={`${QuatHeading.className} tracking-tight text-6xl font-bold mb-8`}>
+            <span className="text-5xl pr-2">&#9741;</span> How can I make your day?
           </h1>
           <div className="w-full max-w-2xl">
             <form onSubmit={handleSubmit} className="bg-gray-900 rounded-lg p-1 pl-4 flex">
@@ -79,22 +81,13 @@ export default function MainDashboard() {
                 disabled={!isUserSignedIn || !inputValue.trim()}
                 className="ml-2 px-4 py-2 bg-red-900 text-white rounded-md hover:bg-red-950 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                &#8657;
+                &#10228;
               </button>
             </form>
             <SignInWithGoogleButton />
           </div>
         </main>
-        <footer className="p-4 flex justify-center gap-4 text-sm text-white">
-          <a href="https://hobin.dev" className="hover:text-gray-300">
-            &#8657;
-          </a>
-          <a href="#" className="hover:text-gray-300">
-            &#10228;
-          </a>
-          <a href="#" className="hover:text-gray-300">
-            &#10560;
-          </a>
+        <footer className="p-4 flex justify-center gap-4 text-6xl text-opacity-20 text-white">
         </footer>
       </div>
     );
