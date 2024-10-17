@@ -42,7 +42,6 @@ export class FirebaseServerImpl extends FirebaseClientImpl {
   ): Promise<EventResponseConfirmation> {
     try {
       const oauth2Client = new google.auth.OAuth2();
-      console.log("Token being pushed to server-side: " + token);
       oauth2Client.setCredentials({ access_token: token });
 
       const calendarInst = google.calendar({ version: "v3", auth: oauth2Client });
