@@ -7,6 +7,7 @@
 // [START components/SignInWithGoogle]
 import { parseError } from "@/utils/back";
 import { useTokenStore } from "@/stores";
+import { useState } from "react";
 import firebaseClient from "@/services/firebase";
 
 // Assuming you have already initialized Firebase in your project
@@ -16,6 +17,8 @@ export function SignInWithGoogleButton() {
   const { token, setToken } = useTokenStore();
   const isSignedIn = token;
 
+  const [email, setEmail] = useState<string>("");
+
   if (token) {
     return <></>;
   }
@@ -23,7 +26,10 @@ export function SignInWithGoogleButton() {
   const handleLogin = async () => {
     try {
       const response = await firebaseClient.signInWithGoogle();
-      if (response.success && response.data) setToken(response.data);
+      if (response.success && response.data && response.email) {
+        setToken(response.data);
+        setEmail(response.email);
+      }
     } catch (error: unknown) {
       // Convert this to be a notification later
       console.log(parseError(error));
@@ -33,11 +39,9 @@ export function SignInWithGoogleButton() {
   return (
     <div
       className={`
-            bg-gray-900 text-white p-4 flex items-center justify-between
+            bg-slate-900 text-white p-4 flex items-center justify-between
             w-full max-w-sm transition-colors duration-300 ease-in-out
-            ${
-              isSignedIn ? "cursor-default" : "cursor-pointer hover:bg-gray-800"
-            }
+            rounded-xl
           `}
       role={isSignedIn ? "status" : "button"}
       onClick={!isSignedIn ? handleLogin : undefined}
