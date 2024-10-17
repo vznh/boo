@@ -1,3 +1,10 @@
+// [BEGIN models/types.ts]
+
+/**
+* Interface for Google Calendar insertion event. Abides by event insertion guidelines.
+* Required fields: summary, location, description, start/end time.
+* Optional fields: recurrence (does the event occur more than once?), attenddees, reminders (not implemented)
+*/
 export interface CalendarEvent {
   summary: string; // Most concise summary of event, no abbreviations/stand-fors
   location: string; // Standalone string
@@ -20,3 +27,5 @@ export interface CalendarEvent {
     }[]; // Array of reminder override objects
   };
 }
+
+// [END models/types.ts]
