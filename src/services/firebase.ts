@@ -1,6 +1,6 @@
 /**
  * This module provides an singleton implementation of Firebase client operations,
- * including Google sign-in and event insertion into Google Calendar.
+ * including Google sign-in into Google Calendar.
  *
  * It defines the `EventResponseConfirmation` interface for handling
  * responses from event operations, as well as the `FirebaseClient`
@@ -21,11 +21,8 @@ import {
   getAuth,
   signInWithPopup,
   Auth,
-  UserCredential,
   GoogleAuthProvider,
-  OAuthCredential,
 } from "firebase/auth";
-import { parseError } from "@/utils/back";
 
 interface CredentialRequestResponse {
   data?: string;
