@@ -1,4 +1,9 @@
 // [START models/fonts.ts]
+/**
+ * All fonts below are exported for easy access.
+ * Usage: ${fontName.className} using TailwindCSS.
+ */
+
 import { Inter, Quattrocento, Noto_Sans } from "next/font/google";
 
 export const InterHeading = Inter({
