@@ -1,7 +1,7 @@
 // [START services/server]
 import { FirebaseClientImpl } from "@/services/firebase";
 import { CalendarEvent } from "@/models/types";
-import { google } from "googleapis";
+import { google, calendar_v3 } from "googleapis";
 import { parseError } from "@/utils/back";
 
 /**
@@ -48,7 +48,7 @@ export class FirebaseServerImpl extends FirebaseClientImpl {
       const calendarInst = google.calendar({ version: "v3", auth: oauth2Client });
       const response = await calendarInst.events.insert({
         calendarId: "primary",
-        requestBody: event,
+        requestBody: event as calendar_v3.Schema$Event
       });
 
       return response.data ? { success: true, data: response } : { success: false, error: "There was an error attempting to insert an event. Data did not succeed. Additional details (if present): " + parseError(response.data) };
