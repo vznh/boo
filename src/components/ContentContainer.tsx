@@ -1,4 +1,7 @@
 // [START components/ContentContainer.tsx]
+/**
+ * Content container used for applying effects globally or layout.
+ */
 import { ReactNode, FC } from "react"
 
 const ContentContainer: FC<{ children: ReactNode }> = ({ children }) => {
