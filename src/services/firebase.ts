@@ -29,6 +29,7 @@ import { parseError } from "@/utils/back";
 
 interface CredentialRequestResponse {
   data?: string;
+  email?: string;
   success: boolean;
   error?: string;
 }
@@ -89,8 +90,9 @@ export class FirebaseClientImpl implements FirebaseClient {
 
       const credential = GoogleAuthProvider.credentialFromResult(result);
       const token = credential!.accessToken;
+      const email = result!.user!.email!;
 
-      return { data: token, success: true };
+      return { data: token, email: email, success: true };
     } catch (error: any | unknown) {
       return { success: false, error: "Signing in with Google returned an error, or no credentials."}
     }
